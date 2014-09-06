@@ -100,6 +100,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private SpriteFont font;
 
         /// <summary>
+        /// This is the texture for the header.
+        /// </summary>
+        private Texture2D barrel;
+
+        /// <summary>
         /// Initializes a new instance of the XnaBasics class.
         /// </summary>
         public XnaBasics()
