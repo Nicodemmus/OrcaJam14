@@ -10,12 +10,35 @@ namespace Microsoft.Samples.Kinect.XnaBasics
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Bespoke.Common;
+    using Bespoke.Common.Osc;
+    using System;
+    using System.Net;
 
     /// <summary>
     /// The main Xna game implementation.
     /// </summary>
     public class XnaBasics : Microsoft.Xna.Framework.Game
     {
+
+        /// <summary>
+        /// This is the UDP port that will be used to communicate with the OSC server.
+        /// </summary>
+        private const int m_OscServerUdpPort = 5100;
+
+        /// <summary>
+        /// This is used to store an instance of an OSC Server, which will be 
+        /// the MAX application running in this same computer.
+        /// </summary>
+        private OscServer m_oscServer;
+
+        private static readonly string AliveMethod = "/osctest/alive";
+        private static readonly string TestMethod = "/osctest/test";
+
+        // OSC server Message counters
+        private static int sBundlesReceivedCount;
+        private static int sMessagesReceivedCount;
+
         /// <summary>
         /// This is used to adjust the window size.
         /// </summary>
@@ -100,6 +123,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private SpriteFont font;
 
         /// <summary>
+        /// This is the texture for a barrel.
+        /// </summary>
+        private Texture2D barrel;
+
+        /// <summary>
         /// Initializes a new instance of the XnaBasics class.
         /// </summary>
         public XnaBasics()
@@ -142,6 +170,21 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.Components.Add(this.chooser);
 
             this.previousKeyboard = Keyboard.GetState();
+
+            // Create a connection to the OSC server
+            m_oscServer = new OscServer(TransportType.Udp, IPAddress.Loopback, m_OscServerUdpPort);
+
+            // Configure the OSC Server connection
+            m_oscServer.FilterRegisteredMethods = false;
+            m_oscServer.RegisterMethod(AliveMethod);
+            m_oscServer.RegisterMethod(TestMethod);
+            m_oscServer.BundleReceived += new EventHandler<OscBundleReceivedEventArgs>(oscServer_BundleReceived);
+            m_oscServer.MessageReceived += new EventHandler<OscMessageReceivedEventArgs>(oscServer_MessageReceived);
+            m_oscServer.ReceiveErrored += new EventHandler<ExceptionEventArgs>(oscServer_ReceiveErrored);
+            m_oscServer.ConsumeParsingExceptions = false;
+
+            // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
+            m_oscServer.Start();
         }
 
         /// <summary>
@@ -152,8 +195,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.Services.AddService(typeof(SpriteBatch), this.spriteBatch);
 
-            this.header = Content.Load<Texture2D>("Barrel");
+            this.header = Content.Load<Texture2D>("Header");
             this.font = Content.Load<SpriteFont>("Segoe16");
+            this.barrel = Content.Load<Texture2D>("Barrel");
 
             base.LoadContent();
         }
@@ -268,6 +312,48 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             // This is necessary because we are rendering to back buffer/render targets and we need to preserve the data
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+        }
+
+
+        private static void oscServer_BundleReceived(object sender, OscBundleReceivedEventArgs e)
+        {
+            sBundlesReceivedCount++;
+
+            OscBundle bundle = e.Bundle;
+            Console.WriteLine(string.Format("\nBundle Received [{0}:{1}]: Nested Bundles: {2} Nested Messages: {3}", bundle.SourceEndPoint.Address, bundle.TimeStamp, bundle.Bundles.Count, bundle.Messages.Count));
+            Console.WriteLine("Total Bundles Received: {0}", sBundlesReceivedCount);
+        }
+
+        private static void oscServer_MessageReceived(object sender, OscMessageReceivedEventArgs e)
+        {
+            sMessagesReceivedCount++;
+
+            OscMessage message = e.Message;
+
+            Console.WriteLine(string.Format("\nMessage Received [{0}]: {1}", message.SourceEndPoint.Address, message.Address));
+            Console.WriteLine(string.Format("Message contains {0} objects.", message.Data.Count));
+
+            for (int i = 0; i < message.Data.Count; i++)
+            {
+                string dataString;
+
+                if (message.Data[i] == null)
+                {
+                    dataString = "Nil";
+                }
+                else
+                {
+                    dataString = (message.Data[i] is byte[] ? BitConverter.ToString((byte[])message.Data[i]) : message.Data[i].ToString());
+                }
+                Console.WriteLine(string.Format("[{0}]: {1}", i, dataString));
+            }
+
+            Console.WriteLine("Total Messages Received: {0}", sMessagesReceivedCount);
+        }
+
+        private static void oscServer_ReceiveErrored(object sender, ExceptionEventArgs e)
+        {
+            Console.WriteLine("Error during reception of packet: {0}", e.Exception.Message);
         }
     }
 }

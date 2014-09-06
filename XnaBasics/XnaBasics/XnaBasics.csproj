@@ -152,6 +152,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\OscFramework_2.0\Source Code\Framework\Bespoke.Common.Osc\Bespoke.Common.Osc.csproj">
+      <Project>{6BAE6DE3-9432-44AC-8214-1176DA6F2DE8}</Project>
+      <Name>Bespoke.Common.Osc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\OscFramework_2.0\Source Code\Framework\Bespoke.Common\Bespoke.Common.csproj">
+      <Project>{D7695C90-F793-4E8C-B8BA-B6B5E0815093}</Project>
+      <Name>Bespoke.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XnaBasicsContent\XnaBasicsContent.contentproj">
       <Project>{EDD1E44F-7A6A-4EEF-81BA-C2AE70414025}</Project>
       <Name>KinectXnaDemoContent %28Content%29</Name>

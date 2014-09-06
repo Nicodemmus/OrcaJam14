@@ -117,7 +117,7 @@ namespace Receiver
             Console.WriteLine("Error during reception of packet: {0}", e.Exception.Message);
         }
 
-		private static readonly int Port = 5103;
+		private static readonly int Port = 5100;
 		private static readonly string AliveMethod = "/osctest/alive";
         private static readonly string TestMethod = "/osctest/test";
 
