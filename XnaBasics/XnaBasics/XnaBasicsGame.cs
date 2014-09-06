@@ -15,11 +15,25 @@ namespace Microsoft.Samples.Kinect.XnaBasics
     using System;
     using System.Net;
 
+
     /// <summary>
     /// The main Xna game implementation.
     /// </summary>
     public class XnaBasics : Microsoft.Xna.Framework.Game
     {
+
+        // Mutual exclusion semaphore to access shared data between threads.
+        private static System.Object m_semaphore = new System.Object();
+
+        // The following variables are shared between the game thread and the OSC server listening thread.
+        private static Boolean m_isGameOver;
+        private static Boolean m_YouLose;
+
+        // String message to indicate that the player lost.
+        private const String m_youLoseMessage = "YouLose";
+
+        // String message to indicate that the player won.
+        private const String m_youWinMessage = "YouWin";
 
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
@@ -170,6 +184,14 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.Components.Add(this.chooser);
 
             this.previousKeyboard = Keyboard.GetState();
+
+
+            // Initialize those variables that are shared between the game thread and the 
+            // OSC server thread. Note that is not neccessary to lock the resources since we 
+            // have not yet started the OSC server thread.
+
+            m_isGameOver = false;
+            m_YouLose = false;
 
             // Create a connection to the OSC server
             m_oscServer = new OscServer(TransportType.Udp, IPAddress.Loopback, m_OscServerUdpPort);
@@ -346,6 +368,31 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     dataString = (message.Data[i] is byte[] ? BitConverter.ToString((byte[])message.Data[i]) : message.Data[i].ToString());
                 }
                 Console.WriteLine(string.Format("[{0}]: {1}", i, dataString));
+
+                if (String.Compare(dataString, m_youLoseMessage) == 0)
+                {
+                    lock (m_semaphore)
+                    {
+                        m_isGameOver = true;
+                        m_YouLose = true;
+                    }
+
+                    Console.WriteLine("Game Over!: {0}", dataString);
+                }
+                else if (String.Compare(dataString, m_youWinMessage) == 0)
+                {
+                    lock (m_semaphore)
+                    {
+                        m_isGameOver = true;
+                        m_YouLose = false;
+                    }
+
+                    Console.WriteLine("Game Over!: {0}", dataString);
+                }
+                else
+                {
+                    Console.WriteLine("Unknown Message: {0}", dataString);
+                }
             }
 
             Console.WriteLine("Total Messages Received: {0}", sMessagesReceivedCount);
