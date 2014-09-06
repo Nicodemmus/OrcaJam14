@@ -28,12 +28,16 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         // The following variables are shared between the game thread and the OSC server listening thread.
         private static Boolean m_isGameOver;
         private static Boolean m_YouLose;
+        private static Boolean m_playerClaps;
 
         // String message to indicate that the player lost.
         private const String m_youLoseMessage = "YouLose";
 
         // String message to indicate that the player won.
         private const String m_youWinMessage = "YouWin";
+
+        // String message to indicate that the player claps.
+        private const String m_clapMessage = "Clap";
 
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
@@ -388,6 +392,14 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     }
 
                     Console.WriteLine("Game Over!: {0}", dataString);
+                }
+                else if (String.Compare(dataString, m_clapMessage) == 0)
+                {
+                    lock (m_semaphore)
+                    {
+                        m_playerClaps = true;
+                    }
+                    Console.WriteLine("Player Action: {0}", dataString);
                 }
                 else
                 {
