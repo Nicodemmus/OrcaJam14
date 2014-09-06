@@ -62,10 +62,12 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         private const int Width = 800;
 
-        /// <summary>
-        /// This controls the transition time for the resize animation.
-        /// </summary>
-        private const double TransitionDuration = 1.0;
+        private int level;
+
+        private Boolean clapped;
+
+        private const double maxVisualFeedbackDuration = 500;
+        private double currentVisualFeedbackDuration;
 
         /// <summary>
         /// The graphics device manager provided by Xna.
@@ -84,19 +86,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private readonly ColorStreamRenderer colorStream;
 
         /// <summary>
-        /// This manages the rendering of the depth stream.
-        /// </summary>
-        private readonly DepthStreamRenderer depthStream;
-
-        /// <summary>
         /// This is the location of the color stream when minimized.
         /// </summary>
         private readonly Vector2 colorSmallPosition;
-
-        /// <summary>
-        /// This is the location of the depth stream when minimized;
-        /// </summary>
-        private readonly Vector2 depthSmallPosition;
 
         /// <summary>
         /// This is the minimized size for both streams.
@@ -114,21 +106,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private SpriteBatch spriteBatch;
 
         /// <summary>
-        /// This tracks the state to indicate which stream has focus.
-        /// </summary>
-        private bool colorHasFocus = true;
-
-        /// <summary>
         /// This tracks the previous keyboard state.
         /// </summary>
         private KeyboardState previousKeyboard;
-
-        /// <summary>
-        /// This tracks the current transition time.
-        /// 0                   = Color Stream Full Focus
-        /// TransitionDuration  = Depth Stream Full Focus
-        /// </summary>
-        private double transition;
 
         /// <summary>
         /// This is the texture for the header.
@@ -176,14 +156,12 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.colorStream = new ColorStreamRenderer(this);
 
             // Calculate the minimized size and location
-            this.depthStream = new DepthStreamRenderer(this);
-            this.depthStream.Size = new Vector2(this.viewPortRectangle.Width / 4, this.viewPortRectangle.Height / 4);
-            this.depthStream.Position = new Vector2(Width - this.depthStream.Size.X - 15, 85);
+            this.colorStream.Size = new Vector2(this.viewPortRectangle.Width / 4, this.viewPortRectangle.Height / 4);
+            this.colorStream.Position = new Vector2(Width - this.colorStream.Size.X - 15, 85);
 
             // Store the values so we can animate them later
-            this.minSize = this.depthStream.Size;
-            this.depthSmallPosition = this.depthStream.Position;
-            this.colorSmallPosition = new Vector2(15, 85);
+            this.minSize = this.colorStream.Size;
+            this.colorSmallPosition = this.colorStream.Position;
 
             this.Components.Add(this.chooser);
 
@@ -211,6 +189,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
+
+            level = 1;
         }
 
         /// <summary>
@@ -219,6 +199,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         protected override void LoadContent()
         {
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+
             this.Services.AddService(typeof(SpriteBatch), this.spriteBatch);
 
             this.header = Content.Load<Texture2D>("Header");
@@ -233,48 +214,29 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         protected override void Initialize()
         {
-            this.Components.Add(this.depthStream);
             this.Components.Add(this.colorStream);
 
             base.Initialize();
-        } 
+        }
 
-        /// <summary>
-        /// This method updates the game state. Including monitoring
-        /// keyboard state and the transitions.
-        /// </summary>
-        /// <param name="gameTime">The elapsed game time.</param>
-        protected override void Update(GameTime gameTime)
+        private void update1(GameTime gameTime)
         {
-            base.Update(gameTime);
+            Console.WriteLine("Updating Level 1...");
 
             // If the spacebar has been pressed, toggle the focus
             KeyboardState newState = Keyboard.GetState();
-            if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space))
+            if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space) && clapped == false)
             {
-                this.colorHasFocus = !this.colorHasFocus;
+                currentVisualFeedbackDuration = 0;
+                clapped = true;
             }
 
             this.previousKeyboard = newState;
 
-            // Animate the transition value
-            if (this.colorHasFocus)
-            {
-                this.transition -= gameTime.ElapsedGameTime.TotalSeconds;
-                if (this.transition < 0)
-                {
-                    this.transition = 0;
-                }
-            }
-            else
-            {
-                this.transition += gameTime.ElapsedGameTime.TotalSeconds;
-                if (this.transition > TransitionDuration)
-                {
-                    this.transition = TransitionDuration;
-                }
-            }
+            this.colorStream.Position = this.colorSmallPosition;
+            this.colorStream.Size = this.minSize;
 
+            /*
             // Animate the stream positions and sizes
             this.colorStream.Position = Vector2.SmoothStep(
                 new Vector2(this.viewPortRectangle.X, this.viewPortRectangle.Y),
@@ -293,8 +255,80 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 this.minSize, 
                 new Vector2(this.viewPortRectangle.Width, this.viewPortRectangle.Height),
                 (float)(this.transition / TransitionDuration));
+            */
+            Console.WriteLine("Level 1 updated!");
+        }
+
+        private void updateInitialScreen(GameTime gameTime)
+        {
+            Console.WriteLine("Updating Initial Screen...");
+            Console.WriteLine("Initial Screen updated!");
+        }
+
+        private void updateGameOver(GameTime gameTime)
+        {
+            Console.WriteLine("Updating Game Over...");
+            Console.WriteLine("Game Over updated!");
+        }
+
+        /// <summary>
+        /// This method updates the game state. Including monitoring
+        /// keyboard state and the transitions.
+        /// </summary>
+        /// <param name="gameTime">The elapsed game time.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            switch (level)
+            {
+                case 0:
+                    updateInitialScreen(gameTime);
+                    break;
+
+                case 1:
+                    update1(gameTime);
+                    break;
+
+                default:
+                    updateGameOver(gameTime);
+                    break;
+            }
 
             base.Update(gameTime);
+        }
+
+        private void draw1(GameTime gameTime)
+        {
+            Console.WriteLine("Drawing Level 1...");
+
+            // Render header/footer
+            this.spriteBatch.Begin();
+            this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
+            this.spriteBatch.DrawString(this.font, "Clap once, keep claping and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
+            this.spriteBatch.End();
+
+            this.colorStream.DrawOrder = 1;
+
+            if (clapped)
+            {
+                currentVisualFeedbackDuration += gameTime.ElapsedGameTime.TotalMilliseconds;
+                Console.WriteLine(currentVisualFeedbackDuration);
+                if (maxVisualFeedbackDuration < currentVisualFeedbackDuration)
+                {
+                    clapped = false;
+                }
+            }
+        }
+
+        private void drawInitialScreen(GameTime gameTime)
+        {
+            Console.WriteLine("Drawing Initial Screen...");
+        }
+
+        private void drawGameOver(GameTime gameTime)
+        {
+            Console.WriteLine("Drawing Game Over...");
         }
 
         /// <summary>
@@ -306,22 +340,19 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Clear the screen
             GraphicsDevice.Clear(Color.White);
 
-            // Render header/footer
-            this.spriteBatch.Begin();
-            this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
-            this.spriteBatch.DrawString(this.font, "Press [Space] to switch between color and depth.", new Vector2(10, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
-            this.spriteBatch.End();
+            switch (level)
+            {
+                case 0:
+                    drawInitialScreen(gameTime);
+                    break;
 
-            // Render the streams with respect to focus
-            if (this.colorHasFocus)
-            {
-                this.colorStream.DrawOrder = 1;
-                this.depthStream.DrawOrder = 2;
-            }
-            else
-            {
-                this.colorStream.DrawOrder = 2;
-                this.depthStream.DrawOrder = 1;
+                case 1:
+                    draw1(gameTime);
+                    break;
+
+                default:
+                    drawGameOver(gameTime);
+                    break;
             }
 
             base.Draw(gameTime);
