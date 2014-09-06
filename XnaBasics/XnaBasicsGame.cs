@@ -106,7 +106,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             this.IsFixedTimeStep = false;
             this.IsMouseVisible = true;
-            this.Window.Title = "Xna Basics";
+            this.Window.Title = "Kinect Sounds";
 
             // This sets the width to the desired width
             // It also forces a 4:3 ratio for height
