@@ -229,7 +229,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = Level.Level2;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -500,7 +500,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         protected override void Draw(GameTime gameTime)
         {
             // Clear the screen
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.White);
+
+            base.Draw(gameTime);
 
             switch (level)
             {
@@ -527,8 +529,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 default:
                     break;
             }
-
-            base.Draw(gameTime);
         }
 
         /// <summary>
