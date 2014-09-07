@@ -245,8 +245,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             
             lock (m_semaphore)
             {
+                currentVisualFeedbackDuration = 0;
                 clapped = m_playerClaps;
                 m_playerClaps = false;
+                Console.WriteLine("Clap");
             }
             
 
