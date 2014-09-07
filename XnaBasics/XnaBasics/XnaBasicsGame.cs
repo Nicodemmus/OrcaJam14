@@ -278,7 +278,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             transmitter.Start(txBundle);
 
 
-            level = Level.Level2;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -521,7 +521,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.spriteBatch.Begin();
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
             this.spriteBatch.Draw(this.snare, this.snarePosition, null, Color.White, 0f, Vector2.Zero, snareScale, SpriteEffects.None, 0f);
-            this.spriteBatch.DrawString(this.font, score.ToString() + " (Max: " + maxScore.ToString() + ")", new Vector2(50, 350), Color.White, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+            this.spriteBatch.DrawString(this.font, score.ToString() + " (Max: " + maxScore.ToString() + ")", new Vector2(50, 350), Color.Red, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
             this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
