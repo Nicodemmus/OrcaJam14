@@ -19,7 +19,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.game = game;
             texture = game.Content.Load<Texture2D>("GameOver");
             lastState = Keyboard.GetState();
-
         }
 
         public void Update(GameTime gameTime)
