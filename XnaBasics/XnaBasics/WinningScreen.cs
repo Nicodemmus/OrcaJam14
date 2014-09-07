@@ -43,7 +43,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             if (texture != null)
             {
-                spriteBatch.Draw(texture, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(texture, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, new Vector2(((800 - texture.Width) / texture.Width)+1.7f, ((600 - texture.Height) / texture.Height)+1.7f), SpriteEffects.None, 0f);
             }
         }
     }
