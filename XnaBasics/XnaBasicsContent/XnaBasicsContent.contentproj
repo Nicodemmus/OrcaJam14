@@ -105,13 +105,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="WinningScreen.jpg">
       <Name>WinningScreen</Name>
-=======
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="joker-clapping.png">
       <Name>joker-clapping</Name>
->>>>>>> 765d197781f922535c0eea9966befaef9e84b8fa
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
