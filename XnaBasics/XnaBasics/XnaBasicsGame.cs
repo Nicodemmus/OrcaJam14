@@ -68,8 +68,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private static int level;
 
         private Boolean clapped;
+        private Boolean barrelState;
 
-        private const double maxVisualFeedbackDuration = 500;
+        private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
 
         /// <summary>
@@ -127,6 +128,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// This is the texture for a barrel.
         /// </summary>
         private Texture2D barrel;
+        private float barrelScale;
+        private float barrelRealScale = 0.5f;
+        private float barrelBigScale = 0.6f;
+
+        private Boolean gameOver;
 
         /// <summary>
         /// Initializes a new instance of the XnaBasics class.
@@ -194,6 +200,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             m_oscServer.Start();
 
             level = 1;
+            barrelScale = barrelRealScale;
+            gameOver = false;
         }
 
         public void startGame()
@@ -232,14 +240,44 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private void update1(GameTime gameTime)
         {
-            Console.WriteLine("Updating Level 1...");
+//            Console.WriteLine("Updating Level 1...");
 
-            // If the spacebar has been pressed, toggle the focus
+            /*
+            lock (m_semaphore)
+            {
+                clapped = m_playerClaps;
+                m_playerClaps = false;
+            }
+            */
+
+            lock (m_semaphore)
+            {
+                gameOver = m_isGameOver;
+            }
+
+            if (gameOver)
+                level++;
+
             KeyboardState newState = Keyboard.GetState();
-            if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space) && clapped == false)
+            if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space) && !clapped)
             {
                 currentVisualFeedbackDuration = 0;
                 clapped = true;
+                Console.WriteLine("Clap");
+            }
+
+            if (clapped)
+            {
+                barrelScale = barrelBigScale;
+                currentVisualFeedbackDuration += gameTime.ElapsedGameTime.TotalMilliseconds;
+                Console.WriteLine(currentVisualFeedbackDuration);
+                if (maxVisualFeedbackDuration < currentVisualFeedbackDuration)
+                {
+                    Console.WriteLine("unClap");
+                    clapped = false;
+                    currentVisualFeedbackDuration = 0;
+                    barrelScale = barrelRealScale;
+                }
             }
 
             this.previousKeyboard = newState;
@@ -247,27 +285,26 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.colorStream.Position = this.colorSmallPosition;
             this.colorStream.Size = this.minSize;
 
-            /*
-            // Animate the stream positions and sizes
-            this.colorStream.Position = Vector2.SmoothStep(
-                new Vector2(this.viewPortRectangle.X, this.viewPortRectangle.Y),
-                this.colorSmallPosition, 
-                (float)(this.transition / TransitionDuration));
-            this.colorStream.Size = Vector2.SmoothStep(
-                new Vector2(this.viewPortRectangle.Width, this.viewPortRectangle.Height),
-                this.minSize, 
-                (float)(this.transition / TransitionDuration));
 
-            this.depthStream.Position = Vector2.SmoothStep(
-                this.depthSmallPosition,
-                new Vector2(this.viewPortRectangle.X, this.viewPortRectangle.Y),
-                (float)(this.transition / TransitionDuration));
-            this.depthStream.Size = Vector2.SmoothStep(
-                this.minSize, 
-                new Vector2(this.viewPortRectangle.Width, this.viewPortRectangle.Height),
-                (float)(this.transition / TransitionDuration));
-            */
-            Console.WriteLine("Level 1 updated!");
+
+//            Console.WriteLine("Level 1 updated!");
+        }
+
+        private void draw1(GameTime gameTime)
+        {
+//            Console.WriteLine("Drawing Level 1...");
+
+            // Render header/footer
+
+            this.spriteBatch.Begin();
+            this.spriteBatch.Draw(this.barrel, new Vector2((800 - (this.barrel.Width * barrelScale)) / 2, (600 - (this.barrel.Height * barrelScale)) / 2)
+                , null, Color.White, 0f, Vector2.Zero, barrelScale, SpriteEffects.None, 0f);
+            this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
+            this.spriteBatch.DrawString(this.font, "Clap once, keep claping and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
+            this.spriteBatch.End();
+
+            this.colorStream.DrawOrder = 1;
+
         }
 
         private void updateInitialScreen(GameTime gameTime)
@@ -308,29 +345,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             base.Update(gameTime);
         }
 
-        private void draw1(GameTime gameTime)
-        {
-            Console.WriteLine("Drawing Level 1...");
-
-            // Render header/footer
-            this.spriteBatch.Begin();
-            this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
-            this.spriteBatch.DrawString(this.font, "Clap once, keep claping and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
-            this.spriteBatch.End();
-
-            this.colorStream.DrawOrder = 1;
-
-            if (clapped)
-            {
-                currentVisualFeedbackDuration += gameTime.ElapsedGameTime.TotalMilliseconds;
-                Console.WriteLine(currentVisualFeedbackDuration);
-                if (maxVisualFeedbackDuration < currentVisualFeedbackDuration)
-                {
-                    clapped = false;
-                }
-            }
-        }
-
+        
         private void drawInitialScreen(GameTime gameTime)
         {
             Console.WriteLine("Drawing Initial Screen...");
