@@ -261,7 +261,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             transmitter.Start(txBundle);
 
 
-            level = Level.Level2;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -349,7 +349,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 }
                 else
                 {
-                    level = Level.Level2;
+                    level = Level.WinningScreen;
                 }
             }
 
@@ -705,18 +705,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private static void handleClapWiningScreen()
         {
+            /*
             lock (m_semaphore)
             {
                 XnaBasics.startLevel2();
             }
+            */
         }
 
         private static void handleClapGameOverScreen()
         {
+            /*
             lock (m_semaphore)
             {
                 XnaBasics.startGame();
             }
+             * */
         }
 
 
