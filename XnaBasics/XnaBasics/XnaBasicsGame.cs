@@ -105,11 +105,14 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         private readonly Vector2 colorSmallPosition;
 
+        private readonly Vector2 colorMaxPosition;
+
         /// <summary>
         /// This is the minimized size for both streams.
         /// </summary>
         private readonly Vector2 minSize;
 
+        private readonly Vector2 maxSize;
         /// <summary>
         /// This is the viewport of the streams.
         /// </summary>
@@ -184,6 +187,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.minSize = this.colorStream.Size;
             this.colorSmallPosition = this.colorStream.Position;
 
+            // Calculate the Maximum values for the video stream
+            this.maxSize = new Vector2(this.viewPortRectangle.Width, this.viewPortRectangle.Height);
+            this.colorMaxPosition = new Vector2(10, 85);
+
+
             this.Components.Add(this.chooser);
 
             this.previousKeyboard = Keyboard.GetState();
@@ -222,6 +230,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             m_isGameOver = false;
             m_YouLose = false;
             level = Level.InitialScreen;
+        }
+
+        public static void startLevel2()
+        {
+            m_isGameOver = false;
+            m_YouLose = false;
+            level = Level.Level2;
         }
 
         /// <summary>
@@ -324,6 +339,36 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 //            Console.WriteLine("Level 1 updated!");
         }
 
+
+
+        private void updateL2(GameTime gameTime)
+        {
+            //            Console.WriteLine("Updating Level 2...");
+
+            lock (m_semaphore)
+            {
+                gameOver = m_isGameOver;
+                gameLost = m_YouLose;
+            }
+
+            if (gameOver)
+            {
+                if (gameLost == true)
+                {
+                    level = Level.GameOverScreen;
+                }
+                else
+                {
+                    // Just keep playing!!!!
+                }
+            }
+
+            this.colorStream.Position = this.colorMaxPosition;
+            this.colorStream.Size = this.maxSize;
+
+            //            Console.WriteLine("Level 2 updated!");
+        }
+
         private void draw1(GameTime gameTime)
         {
 //            Console.WriteLine("Drawing Level 1...");
@@ -335,6 +380,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 , null, Color.White, 0f, Vector2.Zero, barrelScale, SpriteEffects.None, 0f);
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
             this.spriteBatch.DrawString(this.font, "Clap once, keep claping and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
+            this.spriteBatch.End();
+
+            this.colorStream.DrawOrder = 1;
+
+        }
+
+
+        private void drawL2(GameTime gameTime)
+        {
+            //            Console.WriteLine("Drawing Level 2...");
+
+            // Render header/footer
+
+            this.spriteBatch.Begin();
+            this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
+            this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
             this.colorStream.DrawOrder = 1;
@@ -375,6 +436,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
                 case Level.Level1:
                     update1(gameTime);
+                    break;
+
+                case Level.Level2:
+                    updateL2(gameTime);
                     break;
 
                 case Level.WinningScreen:
@@ -431,6 +496,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
                 case Level.Level1:
                     draw1(gameTime);
+                    break;
+
+                case Level.Level2:
+                    drawL2(gameTime);
                     break;
 
                 case Level.WinningScreen:
@@ -570,7 +639,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             lock (m_semaphore)
             {
-                XnaBasics.startGame();
+                XnaBasics.startLevel2();
             }
         }
 
