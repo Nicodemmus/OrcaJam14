@@ -85,9 +85,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
 
-        private const double maxVisualFeedbackDuration = 100;
-        private double currentVisualFeedbackDuration;
-
         /// <summary>
         /// The graphics device manager provided by Xna.
         /// </summary>
