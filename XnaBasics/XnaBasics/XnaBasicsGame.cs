@@ -278,7 +278,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             transmitter.Start(txBundle);
 
 
-            level = Level.InitialScreen;
+            level = Level.Level2;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -417,6 +417,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             {
                 gameOver = m_isGameOver;
                 gameLost = m_YouLose;
+
+                m_isGameOver = false;
+                m_YouLose = false;
             }
 
             if (gameOver)
@@ -518,7 +521,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.spriteBatch.Begin();
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
             this.spriteBatch.Draw(this.snare, this.snarePosition, null, Color.White, 0f, Vector2.Zero, snareScale, SpriteEffects.None, 0f);
-            this.spriteBatch.DrawString(this.font, score.ToString() + " (Max: " + maxScore.ToString() + ")", new Vector2(50, 375), Color.Black);
+            this.spriteBatch.DrawString(this.font, score.ToString() + " (Max: " + maxScore.ToString() + ")", new Vector2(50, 375), Color.White);
             this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
