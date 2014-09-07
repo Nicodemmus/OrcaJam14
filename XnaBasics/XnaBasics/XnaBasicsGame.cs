@@ -76,7 +76,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         private const int Width = 800;
 
-        private Level level;
+        private static Level level;
 
         private Boolean clapped;
         private Boolean barrelState;
@@ -210,7 +210,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = Level.WinningScreen;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             gameOver = false;
@@ -277,7 +277,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             }
 
             if (gameOver)
-                level++;
+            {
+                level = Level.GameOverScreen;
+            }
 
             KeyboardState newState = Keyboard.GetState();
             if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space) && !clapped)
@@ -499,11 +501,18 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 }
                 else if (String.Compare(dataString, m_clapMessage) == 0)
                 {
-                    lock (m_semaphore)
-                    {
-                        m_playerClaps = true;
-                    }
                     Console.WriteLine("Player Action: {0}", dataString);
+
+                    switch (level)
+                    {
+                        case Level.InitialScreen:
+                            handleClapInitScreen();
+                            break;
+
+                        case Level.Level1:
+                            handleClapLevel1Screen();
+                            break;
+                    }                   
                 }
                 else
                 {
@@ -517,6 +526,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private static void oscServer_ReceiveErrored(object sender, ExceptionEventArgs e)
         {
             Console.WriteLine("Error during reception of packet: {0}", e.Exception.Message);
+        }
+
+        private static void handleClapLevel1Screen()
+        {
+            lock (m_semaphore)
+            {
+                m_playerClaps = true;
+            }
+        }
+
+        private static void handleClapInitScreen()
+        {
+            lock (m_semaphore)
+            {
+                level = Level.Level1;
+            }
         }
     }
 }
