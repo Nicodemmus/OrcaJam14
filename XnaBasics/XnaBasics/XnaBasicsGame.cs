@@ -14,6 +14,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
     using Bespoke.Common.Osc;
     using System;
     using System.Net;
+    using System.Threading;
 
 
     /// <summary>
@@ -32,12 +33,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         };
 
         // Mutual exclusion semaphore to access shared data between threads.
-        private static System.Object m_semaphore = new System.Object();
+        public static System.Object m_semaphore = new System.Object();
 
         // The following variables are shared between the game thread and the OSC server listening thread.
         private static Boolean m_isGameOver;
         private static Boolean m_YouLose;
         private static Boolean m_playerClaps;
+        public static Boolean m_playerCollides;
 
         // String message to indicate that the player lost.
         private const String m_youLoseMessage = "YouLose";
@@ -54,15 +56,32 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         StartScreen m_gameStartupScreen;
 
         /// <summary>
-        /// This is the UDP port that will be used to communicate with the OSC server.
+        /// This is the UDP port that will be used to receive messages from the OSC server.
         /// </summary>
-        private const int m_OscServerUdpPort = 5100;
+        private const int m_OscServerUdpRxPort = 5100;
+
+        /// <summary>
+        /// This is the UDP port that will be used to Transmit messages to the OSC server.
+        /// </summary>
+        public static int m_OscServerUdpTxPort = 5101;
 
         /// <summary>
         /// This is used to store an instance of an OSC Server, which will be 
-        /// the MAX application running in this same computer.
+        /// the MAX application running in this same computer. This instance is 
+        /// used to receive OSC messages
         /// </summary>
-        private OscServer m_oscServer;
+        private OscServer m_oscRxServer;
+
+        // Variables for the OSC message transmitter
+        ITransmitter transmitter;
+        OscBundle txBundle;
+
+        /// <summary>
+        /// This is used to store an instance of an OSC Server, which will be 
+        /// the MAX application running in this same computer. This instance is 
+        /// used to transmit OSC messages
+        /// </summary>
+        private OscServer m_oscTxServer;
 
         private static readonly string AliveMethod = "/osctest/alive";
         private static readonly string TestMethod = "/osctest/test";
@@ -213,21 +232,32 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             m_isGameOver = false;
             m_YouLose = false;
+            m_playerCollides = false;
 
-            // Create a connection to the OSC server
-            m_oscServer = new OscServer(TransportType.Udp, IPAddress.Loopback, m_OscServerUdpPort);
+            // Create a connection to the OSC RX server
+            m_oscRxServer = new OscServer(TransportType.Udp, IPAddress.Loopback, m_OscServerUdpRxPort);
 
             // Configure the OSC Server connection
-            m_oscServer.FilterRegisteredMethods = false;
-            m_oscServer.RegisterMethod(AliveMethod);
-            m_oscServer.RegisterMethod(TestMethod);
-            m_oscServer.BundleReceived += new EventHandler<OscBundleReceivedEventArgs>(oscServer_BundleReceived);
-            m_oscServer.MessageReceived += new EventHandler<OscMessageReceivedEventArgs>(oscServer_MessageReceived);
-            m_oscServer.ReceiveErrored += new EventHandler<ExceptionEventArgs>(oscServer_ReceiveErrored);
-            m_oscServer.ConsumeParsingExceptions = false;
+            m_oscRxServer.FilterRegisteredMethods = false;
+            m_oscRxServer.RegisterMethod(AliveMethod);
+            m_oscRxServer.RegisterMethod(TestMethod);
+            m_oscRxServer.BundleReceived += new EventHandler<OscBundleReceivedEventArgs>(oscServer_BundleReceived);
+            m_oscRxServer.MessageReceived += new EventHandler<OscMessageReceivedEventArgs>(oscServer_MessageReceived);
+            m_oscRxServer.ReceiveErrored += new EventHandler<ExceptionEventArgs>(oscServer_ReceiveErrored);
+            m_oscRxServer.ConsumeParsingExceptions = false;
 
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
-            m_oscServer.Start();
+            m_oscRxServer.Start();
+
+
+            // Create OSC message bundle
+            txBundle = CreateMessageBundle();
+
+            // Create OSC message transmitter
+            transmitter = new UdpTransmitter();
+
+            transmitter.Start(txBundle);
+
 
             level = Level.InitialScreen;
 
@@ -663,6 +693,23 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             {
                 XnaBasics.startGame();
             }
+        }
+
+
+        private static OscBundle CreateMessageBundle()
+        {
+            IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Loopback, m_OscServerUdpTxPort);
+            OscBundle bundle = new OscBundle(sourceEndPoint);
+
+            OscBundle nestedBundle = new OscBundle(sourceEndPoint);
+            OscMessage nestedMessage = new OscMessage(sourceEndPoint, TestMethod);
+            nestedMessage.AppendNil();
+            nestedMessage.Append("/maxtest/hit");
+            nestedMessage.Append(10);
+ 
+            bundle.Append(nestedMessage);
+
+            return bundle;
         }
     }
 }
