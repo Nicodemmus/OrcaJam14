@@ -144,6 +144,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private float barrelBigScale = 0.6f;
 
         private Boolean gameOver;
+        private Boolean gameLost;
 
         /// <summary>
         /// Initializes a new instance of the XnaBasics class.
@@ -276,11 +277,19 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             lock (m_semaphore)
             {
                 gameOver = m_isGameOver;
+                gameLost = m_YouLose;
             }
 
             if (gameOver)
             {
-                level = Level.GameOverScreen;
+                if (gameLost == true)
+                {
+                    level = Level.GameOverScreen;
+                }
+                else
+                {
+                    level = Level.WinningScreen;
+                }
             }
 
             KeyboardState newState = Keyboard.GetState();
@@ -488,6 +497,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     lock (m_semaphore)
                     {
                         m_isGameOver = true;
+                        m_YouLose = true;
                     }
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
