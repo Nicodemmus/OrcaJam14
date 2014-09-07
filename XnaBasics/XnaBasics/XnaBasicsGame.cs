@@ -524,6 +524,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         case Level.Level1:
                             handleClapLevel1Screen();
                             break;
+
+                        case Level.WinningScreen:
+                            handleClapWiningScreen();
+                            break;
                     }                   
                 }
                 else
@@ -553,6 +557,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             lock (m_semaphore)
             {
                 level = Level.Level1;
+            }
+        }
+
+        private static void handleClapWiningScreen()
+        {
+            lock (m_semaphore)
+            {
+                level = Level.InitialScreen;
+            }
+        }
+
+        private static void handleClapGameOverScreen()
+        {
+            lock (m_semaphore)
+            {
+                level = Level.InitialScreen;
             }
         }
     }
