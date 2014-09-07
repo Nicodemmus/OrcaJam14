@@ -440,7 +440,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     lock (m_semaphore)
                     {
                         m_isGameOver = true;
-                        m_YouLose = true;
                     }
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
