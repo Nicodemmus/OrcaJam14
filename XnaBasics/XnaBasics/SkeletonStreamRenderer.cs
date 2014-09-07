@@ -254,8 +254,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         {
                             Vector2 vJoint = CalculateJointPosition(j);
                             Rectangle rJoint = new Rectangle((int)vJoint.X, (int)vJoint.Y, 1, 1);
-                            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", collidableObject.X, collidableObject.Y, collidableObject.Width, collidableObject.Height);
-                            Console.WriteLine("Joint: ({0},{1})", rJoint.X, rJoint.Y);
+//                            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", collidableObject.X, collidableObject.Y, collidableObject.Width, collidableObject.Height);
+//                            Console.WriteLine("Joint: ({0},{1})", rJoint.X, rJoint.Y);
 //                            Console.WriteLine("Joint: ({0},{1})", vJoint.X, vJoint.Y);
                             spriteBatch.Begin();
                             spriteBatch.Draw(texture, rJoint, Color.Black);

@@ -31,6 +31,15 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             Level2
         };
 
+        enum DrumState
+        {
+            In,
+            Out,
+        };
+
+        DrumState currentState;
+        DrumState previousState;
+
         // Mutual exclusion semaphore to access shared data between threads.
         private static System.Object m_semaphore = new System.Object();
 
@@ -238,6 +247,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             gameOver = false;
             playerColided = false;
+
+            currentState = DrumState.Out;
+            previousState = DrumState.Out;
+
         }
 
         public static void startGame()
@@ -381,7 +394,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             this.colorStream.Position = this.colorMaxPosition;
             this.colorStream.Size = this.maxSize;
-            this.snarePosition = new Vector2((800 - (this.snare.Width * snareScale)) / 2, (600 - (this.snare.Height * snareScale)) / 2);
+            this.snarePosition = new Vector2(50, 400);
             //            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", this.snarePosition.X, this.snarePosition.Y, this.snare.Bounds.Width, this.snare.Bounds.Height);
   //          Console.WriteLine("Objec: L:{0} R:{1} T:{2} B:{3}", this.snare.Bounds.Left, this.snare.Bounds.Right, this.snare.Bounds.Top, this.snare.Bounds.Bottom);
             // Did the player collide with any of their joints?
@@ -397,11 +410,24 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             }
 
                 //it colided
+            previousState = currentState;
             if (playerColided)
             {
-                Console.WriteLine("You Collided!");
+                currentState = DrumState.In;
             }
-            
+            else
+            {
+                currentState = DrumState.Out;
+            }
+            currentVisualFeedbackDuration += gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (currentState != previousState && currentState == DrumState.In)
+            {
+                if (currentVisualFeedbackDuration > maxVisualFeedbackDuration)
+                {
+                    Console.WriteLine("You Collided!");
+                    currentVisualFeedbackDuration = 0;
+                }
+            }
 
 
             //            Console.WriteLine("Level 2 updated!");
