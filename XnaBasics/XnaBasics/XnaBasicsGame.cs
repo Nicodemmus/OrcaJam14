@@ -423,12 +423,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 if (gameLost == true)
                 {
                     score = 0;
-                    level = Level.GameOverScreen;
+                    gameLost = false;
                 }
                 else
                 {
                     // Just keep playing!!!!
                 }
+                gameOver = false;
             }
 
             this.colorStream.Position = this.colorMaxPosition;
