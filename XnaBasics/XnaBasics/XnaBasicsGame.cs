@@ -22,6 +22,15 @@ namespace Microsoft.Samples.Kinect.XnaBasics
     public class XnaBasics : Microsoft.Xna.Framework.Game
     {
 
+        enum Level
+        {
+            InitialScreen,
+            WinningScreen,
+            GameOverScreen,
+            Level1,
+            Level2
+        };
+
         // Mutual exclusion semaphore to access shared data between threads.
         private static System.Object m_semaphore = new System.Object();
 
@@ -41,6 +50,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         // Screen instances
         GameOverScreen m_gameOverScreen;
+        WinningScreen m_winningScreen;
 
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
@@ -65,7 +75,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         private const int Width = 800;
 
-        private static int level;
+        private Level level;
 
         private Boolean clapped;
         private Boolean barrelState;
@@ -199,14 +209,14 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = 1;
+            level = Level.WinningScreen;
             barrelScale = barrelRealScale;
             gameOver = false;
         }
 
         public void startGame()
         {
-            level = 1;
+            level = Level.InitialScreen;
         }
 
         /// <summary>
@@ -224,6 +234,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
 
             m_gameOverScreen = new GameOverScreen(this);
+            m_winningScreen = new WinningScreen(this);
 
             base.LoadContent();
         }
@@ -322,6 +333,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             m_gameOverScreen.Update(gameTime);
         }
 
+        private void updateWinninScreen(GameTime gameTime)
+        {
+            m_winningScreen.Update(gameTime);
+        }
+
         /// <summary>
         /// This method updates the game state. Including monitoring
         /// keyboard state and the transitions.
@@ -333,16 +349,23 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             switch (level)
             {
-                case 0:
+                case Level.InitialScreen:
                     updateInitialScreen(gameTime);
                     break;
 
-                case 1:
+                case Level.Level1:
                     update1(gameTime);
                     break;
 
-                default:
+                case Level.WinningScreen:
+                    updateWinninScreen(gameTime);
+                    break;
+
+                case Level.GameOverScreen:
                     updateGameOver(gameTime);
+                    break;
+
+                default:
                     break;
             }
 
@@ -362,6 +385,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.spriteBatch.End();
         }
 
+        private void drawWinninScreen(GameTime gameTime)
+        {
+            this.spriteBatch.Begin();
+            m_winningScreen.Draw(spriteBatch);
+            this.spriteBatch.End();
+        }
+
         /// <summary>
         /// This method renders the current state.
         /// </summary>
@@ -373,16 +403,23 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             switch (level)
             {
-                case 0:
+                case Level.InitialScreen:
                     drawInitialScreen(gameTime);
                     break;
 
-                case 1:
+                case Level.Level1:
                     draw1(gameTime);
                     break;
 
-                default:
+                case Level.WinningScreen:
+                    drawWinninScreen(gameTime);
+                    break;
+
+                case Level.GameOverScreen:
                     drawGameOver(gameTime);
+                    break;
+
+                default:
                     break;
             }
 
