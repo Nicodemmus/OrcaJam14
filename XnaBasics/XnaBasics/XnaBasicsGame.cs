@@ -55,6 +55,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         WinningScreen m_winningScreen;
         StartScreen m_gameStartupScreen;
 
+
+
         /// <summary>
         /// This is the UDP port that will be used to receive messages from the OSC server.
         /// </summary>
@@ -98,7 +100,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private static Level level;
 
         private Boolean clapped;
-        private Boolean barrelState;
 
         private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
@@ -171,12 +172,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private Texture2D snare;
         private float snareScale;
-        private float snareRealScale = 0.5f;
-        private float snareBigScale = 0.6f;
-
+        private float snareRealScale = 1.0f;
+        private Vector2 snarePosition;
 
         private Boolean gameOver;
         private Boolean gameLost;
+
+        private Boolean playerColided;
 
         /// <summary>
         /// Initializes a new instance of the XnaBasics class.
@@ -259,12 +261,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             transmitter.Start(txBundle);
 
 
-            level = Level.InitialScreen;
+            level = Level.Level2;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
 
             gameOver = false;
+            playerColided = false;
         }
 
         public static void startGame()
@@ -346,7 +349,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 }
                 else
                 {
-                    level = Level.WinningScreen;
+                    level = Level.Level2;
                 }
             }
 
@@ -408,6 +411,28 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             this.colorStream.Position = this.colorMaxPosition;
             this.colorStream.Size = this.maxSize;
+            this.snarePosition = new Vector2((800 - (this.snare.Width * snareScale)) / 2, (600 - (this.snare.Height * snareScale)) / 2);
+            //            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", this.snarePosition.X, this.snarePosition.Y, this.snare.Bounds.Width, this.snare.Bounds.Height);
+  //          Console.WriteLine("Objec: L:{0} R:{1} T:{2} B:{3}", this.snare.Bounds.Left, this.snare.Bounds.Right, this.snare.Bounds.Top, this.snare.Bounds.Bottom);
+            // Did the player collide with any of their joints?
+            if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y - 100, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
+            {
+                playerColided = true;
+//                Console.WriteLine("You Collided!");
+            }
+            else
+            {
+                playerColided = false;
+//                Console.WriteLine("You did not Collide!");
+            }
+
+                //it colided
+            if (playerColided)
+            {
+                Console.WriteLine("You Collided!");
+            }
+            
+
 
             //            Console.WriteLine("Level 2 updated!");
         }
@@ -438,8 +463,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             
             this.spriteBatch.Begin();
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
-            this.spriteBatch.Draw(this.snare, new Vector2((800 - (this.barrel.Width * barrelScale)) / 2, (600 - (this.barrel.Height * barrelScale)) / 2)
-                , null, Color.White, 0f, Vector2.Zero, barrelScale, SpriteEffects.None, 0f);
+            this.spriteBatch.Draw(this.snare, this.snarePosition, null, Color.White, 0f, Vector2.Zero, snareScale, SpriteEffects.None, 0f);
             this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
