@@ -242,13 +242,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
 //            Console.WriteLine("Updating Level 1...");
 
-            /*
+            
             lock (m_semaphore)
             {
                 clapped = m_playerClaps;
                 m_playerClaps = false;
             }
-            */
+            
 
             lock (m_semaphore)
             {
@@ -438,7 +438,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         m_isGameOver = true;
                         m_YouLose = true;
                     }
-                    level = 2;
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
                 else if (String.Compare(dataString, m_youWinMessage) == 0)
@@ -449,7 +448,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         m_YouLose = false;
                     }
 
-                    level = 2;
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
                 else if (String.Compare(dataString, m_clapMessage) == 0)
