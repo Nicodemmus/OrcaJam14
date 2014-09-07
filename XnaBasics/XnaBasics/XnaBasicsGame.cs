@@ -152,7 +152,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             this.IsFixedTimeStep = false;
             this.IsMouseVisible = true;
-            this.Window.Title = "Xna Basics";
+            this.Window.Title = "Kinetic Sounds";
 
             // This sets the width to the desired width
             // It also forces a 4:3 ratio for height
@@ -218,6 +218,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         public void startGame()
         {
+            m_isGameOver = false;
+            m_YouLose = false;
             level = Level.InitialScreen;
         }
 
