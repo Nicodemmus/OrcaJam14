@@ -38,6 +38,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             Out,
         };
 
+
         DrumState currentState;
         DrumState previousState;
 
@@ -109,6 +110,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private static Level level;
 
         private Boolean clapped;
+
+        private double winningScreenCurrentTime;
+        private const double winningScreenMaxTime = 5000;
 
         private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
@@ -537,6 +541,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private void updateWinninScreen(GameTime gameTime)
         {
+            winningScreenCurrentTime += gameTime.ElapsedGameTime.Milliseconds;
+            if (winningScreenCurrentTime > winningScreenMaxTime)
+            {
+                level = Level.Level2;
+            }
             m_winningScreen.Update(gameTime);
         }
 
