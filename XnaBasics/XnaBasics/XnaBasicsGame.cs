@@ -419,9 +419,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 gameLost = m_YouLose;
             }
 
-            if (maxScore < score)
-                maxScore = score;
-
             if (gameOver)
             {
                 score = 0;
@@ -481,6 +478,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     currentVisualFeedbackDuration = 0;
                 }
             }
+
+            if (maxScore < score)
+                maxScore = score;
 
             this.previousKeyboard = newState;
 
