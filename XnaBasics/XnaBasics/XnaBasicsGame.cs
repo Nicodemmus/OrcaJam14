@@ -417,6 +417,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             {
                 gameOver = m_isGameOver;
                 gameLost = m_YouLose;
+
+                m_isGameOver = false;
+                m_YouLose = false;
             }
 
             if (gameOver)

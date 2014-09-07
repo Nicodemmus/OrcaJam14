@@ -4,11 +4,11 @@
 		"appversion" : 		{
 			"major" : 6,
 			"minor" : 1,
-			"revision" : 7,
+			"revision" : 8,
 			"architecture" : "x64"
 		}
 ,
-		"rect" : [ 89.0, 118.0, 640.0, 480.0 ],
+		"rect" : [ 11.0, 62.0, 640.0, 480.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -169,7 +169,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 71.0, 173.0, 126.0, 20.0 ],
-					"text" : "if $i1 > 100 then bang"
+					"text" : "if $i1 > 500 then bang"
 				}
 
 			}
