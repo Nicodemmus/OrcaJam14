@@ -146,6 +146,16 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private float barrelRealScale = 0.5f;
         private float barrelBigScale = 0.6f;
 
+        /// <summary>
+        /// This is the texture, position and scale for the snare drum
+        /// </summary>
+
+        private Texture2D snare;
+        private float snareScale;
+        private float snareRealScale = 0.5f;
+        private float snareBigScale = 0.6f;
+
+
         private Boolean gameOver;
         private Boolean gameLost;
 
@@ -219,9 +229,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = Level.InitialScreen;
+            level = Level.Level2;
 
             barrelScale = barrelRealScale;
+            snareScale = snareRealScale;
+
             gameOver = false;
         }
 
@@ -251,6 +263,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.header = Content.Load<Texture2D>("Header");
             this.font = Content.Load<SpriteFont>("Segoe16");
             this.barrel = Content.Load<Texture2D>("Barrel");
+            this.snare = Content.Load<Texture2D>("snare");
 
 
             m_gameOverScreen = new GameOverScreen(this);
@@ -392,15 +405,16 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             //            Console.WriteLine("Drawing Level 2...");
 
             // Render header/footer
-
+            
             this.spriteBatch.Begin();
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
+            this.spriteBatch.Draw(this.snare, new Vector2((800 - (this.barrel.Width * barrelScale)) / 2, (600 - (this.barrel.Height * barrelScale)) / 2)
+                , null, Color.White, 0f, Vector2.Zero, barrelScale, SpriteEffects.None, 0f);
             this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
-            this.colorStream.DrawOrder = 1;
 
-        }
+         }
 
         private void updateInitialScreen(GameTime gameTime)
         {
@@ -486,7 +500,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         protected override void Draw(GameTime gameTime)
         {
             // Clear the screen
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             switch (level)
             {
