@@ -85,9 +85,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
 
-        private const double maxVisualFeedbackDuration = 100;
-        private double currentVisualFeedbackDuration;
-
         /// <summary>
         /// The graphics device manager provided by Xna.
         /// </summary>
@@ -388,7 +385,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             //            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", this.snarePosition.X, this.snarePosition.Y, this.snare.Bounds.Width, this.snare.Bounds.Height);
   //          Console.WriteLine("Objec: L:{0} R:{1} T:{2} B:{3}", this.snare.Bounds.Left, this.snare.Bounds.Right, this.snare.Bounds.Top, this.snare.Bounds.Bottom);
             // Did the player collide with any of their joints?
-            if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y - 100, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
+            if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y - 110, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
             {
                 playerColided = true;
 //                Console.WriteLine("You Collided!");
