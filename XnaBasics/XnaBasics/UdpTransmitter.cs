@@ -32,7 +32,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             {
                 while (mSendMessages)
                 {
-                    Thread.Sleep(50);
+                    Thread.Sleep(5);
                     lock (XnaBasics.m_semaphore)
                     {
                         collide = XnaBasics.playerColided;
