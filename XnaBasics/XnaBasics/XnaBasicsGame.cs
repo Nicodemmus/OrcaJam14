@@ -277,7 +277,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             transmitter.Start(txBundle);
 
 
-            level = Level.Level2;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -423,6 +423,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 if (gameLost == true)
                 {
                     score = 0;
+                    level = Level.GameOverScreen;
                 }
                 else
                 {
