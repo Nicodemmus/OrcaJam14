@@ -62,7 +62,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         WinningScreen m_winningScreen;
         StartScreen m_gameStartupScreen;
 
-
+        private int score;
 
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
@@ -242,7 +242,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = Level.InitialScreen;
+            level = Level.Level2;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -387,7 +387,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             {
                 if (gameLost == true)
                 {
-                    level = Level.GameOverScreen;
+                    score = 0;
                 }
                 else
                 {
@@ -431,9 +431,25 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     snareScale = snareBigScale;
                     playerColided = true;
                     Console.WriteLine("You Collided!");
+                    score++;
                     currentVisualFeedbackDuration = 0;
                 }
             }
+
+            KeyboardState newState = Keyboard.GetState();
+            if (this.previousKeyboard.IsKeyUp(Keys.Space) && newState.IsKeyDown(Keys.Space) && !clapped)
+            {
+                if (currentVisualFeedbackDuration > maxVisualFeedbackDuration)
+                {
+                    snareScale = snareBigScale;
+                    playerColided = true;
+                    Console.WriteLine("You Collided!");
+                    score++;
+                    currentVisualFeedbackDuration = 0;
+                }
+            }
+
+            this.previousKeyboard = newState;
 
             if (currentVisualFeedbackDuration > maxVisualFeedbackDuration)
             {
@@ -466,10 +482,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             //            Console.WriteLine("Drawing Level 2...");
 
             // Render header/footer
-            
             this.spriteBatch.Begin();
             this.spriteBatch.Draw(this.header, Vector2.Zero, null, Color.White);
             this.spriteBatch.Draw(this.snare, this.snarePosition, null, Color.White, 0f, Vector2.Zero, snareScale, SpriteEffects.None, 0f);
+            this.spriteBatch.DrawString(this.font, score.ToString(), new Vector2(50, 375), Color.Black);
             this.spriteBatch.DrawString(this.font, "Hit the drums and maintain the rythm.", new Vector2(100, this.viewPortRectangle.Y + this.viewPortRectangle.Height + 3), Color.Black);
             this.spriteBatch.End();
 
