@@ -217,7 +217,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             gameOver = false;
         }
 
-        public void startGame()
+        public static void startGame()
         {
             m_isGameOver = false;
             m_YouLose = false;
@@ -386,8 +386,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 default:
                     break;
             }
-
-            base.Update(gameTime);
         }
 
         
@@ -528,6 +526,10 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         case Level.WinningScreen:
                             handleClapWiningScreen();
                             break;
+
+                        case Level.GameOverScreen:
+                            handleClapGameOverScreen();
+                            break;
                     }                   
                 }
                 else
@@ -564,7 +566,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             lock (m_semaphore)
             {
-                level = Level.InitialScreen;
+                XnaBasics.startGame();
             }
         }
 
@@ -572,7 +574,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             lock (m_semaphore)
             {
-                level = Level.InitialScreen;
+                XnaBasics.startGame();
             }
         }
     }

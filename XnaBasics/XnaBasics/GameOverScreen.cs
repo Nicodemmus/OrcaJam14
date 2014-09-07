@@ -27,7 +27,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             if (keyboardState.IsKeyDown(Keys.Enter) && lastState.IsKeyUp(Keys.Enter))
             {
-                game.startGame();
+                XnaBasics.startGame();
                 Console.WriteLine("Enter Key pressed!");
             }
             else if (keyboardState.IsKeyDown(Keys.Escape) && lastState.IsKeyUp(Keys.Escape))
