@@ -245,13 +245,15 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             
             lock (m_semaphore)
             {
-                currentVisualFeedbackDuration = 0;
-                clapped = m_playerClaps;
+                if (m_playerClaps && !clapped)
+                {
+                    clapped = true;
+                    currentVisualFeedbackDuration = 0;
+                    Console.WriteLine("Clap");
+                }
                 m_playerClaps = false;
-                Console.WriteLine("Clap");
             }
             
-
             lock (m_semaphore)
             {
                 gameOver = m_isGameOver;
