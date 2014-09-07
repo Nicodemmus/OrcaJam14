@@ -49,6 +49,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// The joint texture.
         /// </summary>
         private Texture2D jointTexture;
+        public static Texture2D texture;
 
         /// <summary>
         /// The origin (center) location of the bone texture.
@@ -225,6 +226,55 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             base.Draw(gameTime);
         }
 
+        public static Vector2 CalculateJointPosition(Joint joint)
+        {
+            var jointx = joint.Position.X;
+            var jointy = joint.Position.Y;
+            var jointz = joint.Position.Z;
+            var jointnormx = jointx / jointz;
+            var jointnormy = -(jointy / jointz);
+            return new Vector2((jointnormx + 0.5f) * (int)800, (jointnormy + 0.5f) * (int)600);
+        }
+
+        public static Boolean didJointCollide(Rectangle collidableObject, SpriteBatch spriteBatch)
+        {
+            Boolean didItCollide = false;
+
+            if (null == skeletonData)
+                return false;
+
+            foreach (Skeleton skeleton in skeletonData)
+            {
+                foreach (Joint j in skeleton.Joints)
+                {
+                    if (j.JointType == JointType.HandLeft)
+                    {
+//                        Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", collidableObject.X, collidableObject.Y, collidableObject.Width, collidableObject.Height);
+                        if (j.TrackingState == JointTrackingState.Tracked)
+                        {
+                            Vector2 vJoint = CalculateJointPosition(j);
+                            Rectangle rJoint = new Rectangle((int)vJoint.X, (int)vJoint.Y, 1, 1);
+                            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", collidableObject.X, collidableObject.Y, collidableObject.Width, collidableObject.Height);
+                            Console.WriteLine("Joint: ({0},{1})", rJoint.X, rJoint.Y);
+//                            Console.WriteLine("Joint: ({0},{1})", vJoint.X, vJoint.Y);
+                            spriteBatch.Begin();
+                            spriteBatch.Draw(texture, rJoint, Color.Black);
+                            spriteBatch.End();
+
+                            didItCollide = collidableObject.Intersects(rJoint);
+
+                        if (didItCollide)
+                        {
+                            return true;
+                        }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// This method loads the textures and sets the origin values.
         /// </summary>
@@ -232,6 +282,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         {
             base.LoadContent();
 
+            texture = Game.Content.Load<Texture2D>("Joint");
             this.jointTexture = Game.Content.Load<Texture2D>("Joint");
             this.jointOrigin = new Vector2(this.jointTexture.Width / 2, this.jointTexture.Height / 2);
 
