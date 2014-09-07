@@ -8,7 +8,7 @@
 			"architecture" : "x64"
 		}
 ,
-		"rect" : [ 137.0, 86.0, 735.0, 568.0 ],
+		"rect" : [ 105.0, 62.0, 735.0, 568.0 ],
 		"bgcolor" : [ 1.0, 1.0, 0.929412, 1.0 ],
 		"bglocked" : 1,
 		"openinpresentation" : 0,
@@ -1615,7 +1615,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 256.0, 295.0, 70.0, 20.0 ],
-					"text" : "loadmess 7"
+					"text" : "loadmess 6"
 				}
 
 			}
