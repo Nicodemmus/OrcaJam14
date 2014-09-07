@@ -51,6 +51,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         // Screen instances
         GameOverScreen m_gameOverScreen;
         WinningScreen m_winningScreen;
+        StartScreen m_gameStartupScreen;
 
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
@@ -210,6 +211,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             m_oscServer.Start();
 
             level = Level.WinningScreen;
+
             barrelScale = barrelRealScale;
             gameOver = false;
         }
@@ -234,7 +236,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
 
             m_gameOverScreen = new GameOverScreen(this);
+
             m_winningScreen = new WinningScreen(this);
+
+            m_gameStartupScreen = new StartScreen(this);
+
 
             base.LoadContent();
         }
@@ -324,8 +330,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private void updateInitialScreen(GameTime gameTime)
         {
-            Console.WriteLine("Updating Initial Screen...");
-            Console.WriteLine("Initial Screen updated!");
+            m_gameStartupScreen.Update(gameTime);
         }
 
         private void updateGameOver(GameTime gameTime)
@@ -375,7 +380,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         
         private void drawInitialScreen(GameTime gameTime)
         {
-            Console.WriteLine("Drawing Initial Screen...");
+            this.spriteBatch.Begin();
+            m_gameStartupScreen.Draw(spriteBatch);
+            this.spriteBatch.End();
         }
 
         private void drawGameOver(GameTime gameTime)
@@ -477,7 +484,6 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                     lock (m_semaphore)
                     {
                         m_isGameOver = true;
-                        m_YouLose = true;
                     }
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
