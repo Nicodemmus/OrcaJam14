@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorStreamRenderer.cs" />
+    <Compile Include="GameOverScreen.cs" />
     <Compile Include="SkeletonStreamRenderer.cs" />
     <Compile Include="DepthStreamRenderer.cs" />
     <Compile Include="KinectChooser.cs" />

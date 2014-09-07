@@ -39,6 +39,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         // String message to indicate that the player claps.
         private const String m_clapMessage = "Clap";
 
+        // Screen instances
+        GameOverScreen m_gameOverScreen;
+
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
         /// </summary>
@@ -62,7 +65,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         /// </summary>
         private const int Width = 800;
 
-        private int level;
+        private static int level;
 
         private Boolean clapped;
 
@@ -193,6 +196,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             level = 1;
         }
 
+        public void startGame()
+        {
+            level = 1;
+        }
+
         /// <summary>
         /// Loads the Xna related content.
         /// </summary>
@@ -205,6 +213,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             this.header = Content.Load<Texture2D>("Header");
             this.font = Content.Load<SpriteFont>("Segoe16");
             this.barrel = Content.Load<Texture2D>("Barrel");
+
+
+            m_gameOverScreen = new GameOverScreen(this);
 
             base.LoadContent();
         }
@@ -267,8 +278,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private void updateGameOver(GameTime gameTime)
         {
-            Console.WriteLine("Updating Game Over...");
-            Console.WriteLine("Game Over updated!");
+            m_gameOverScreen.Update(gameTime);
         }
 
         /// <summary>
@@ -328,7 +338,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private void drawGameOver(GameTime gameTime)
         {
-            Console.WriteLine("Drawing Game Over...");
+            this.spriteBatch.Begin();
+            m_gameOverScreen.Draw(spriteBatch);
+            this.spriteBatch.End();
         }
 
         /// <summary>
@@ -411,7 +423,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         m_isGameOver = true;
                         m_YouLose = true;
                     }
-
+                    level = 2;
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
                 else if (String.Compare(dataString, m_youWinMessage) == 0)
@@ -422,6 +434,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                         m_YouLose = false;
                     }
 
+                    level = 2;
                     Console.WriteLine("Game Over!: {0}", dataString);
                 }
                 else if (String.Compare(dataString, m_clapMessage) == 0)
