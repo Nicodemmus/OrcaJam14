@@ -163,11 +163,13 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private Texture2D snare;
         private float snareScale;
         private float snareRealScale = 1.0f;
+        private float snareBigScale = 1.1f;
         private Vector2 snarePosition;
 
         private Boolean gameOver;
         private Boolean gameLost;
 
+        private Boolean colision;
         private Boolean playerColided;
 
         /// <summary>
@@ -247,6 +249,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             gameOver = false;
             playerColided = false;
+            colision = false;
 
             currentState = DrumState.Out;
             previousState = DrumState.Out;
@@ -400,18 +403,18 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Did the player collide with any of their joints?
             if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y - 110, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
             {
-                playerColided = true;
+                colision = true;
 //                Console.WriteLine("You Collided!");
             }
             else
             {
-                playerColided = false;
+                colision = false;
 //                Console.WriteLine("You did not Collide!");
             }
 
                 //it colided
             previousState = currentState;
-            if (playerColided)
+            if (colision)
             {
                 currentState = DrumState.In;
             }
@@ -420,15 +423,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 currentState = DrumState.Out;
             }
             currentVisualFeedbackDuration += gameTime.ElapsedGameTime.TotalMilliseconds;
+            playerColided = false;
             if (currentState != previousState && currentState == DrumState.In)
             {
                 if (currentVisualFeedbackDuration > maxVisualFeedbackDuration)
                 {
+                    snareScale = snareBigScale;
+                    playerColided = true;
                     Console.WriteLine("You Collided!");
                     currentVisualFeedbackDuration = 0;
                 }
             }
 
+            if (currentVisualFeedbackDuration > maxVisualFeedbackDuration)
+            {
+                snareScale = snareRealScale;
+            }
 
             //            Console.WriteLine("Level 2 updated!");
         }
