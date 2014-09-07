@@ -4,11 +4,11 @@
 		"appversion" : 		{
 			"major" : 6,
 			"minor" : 1,
-			"revision" : 7,
+			"revision" : 8,
 			"architecture" : "x64"
 		}
 ,
-		"rect" : [ 377.0, 110.0, 735.0, 568.0 ],
+		"rect" : [ 342.0, 58.0, 735.0, 568.0 ],
 		"bgcolor" : [ 1.0, 1.0, 0.929412, 1.0 ],
 		"bglocked" : 1,
 		"openinpresentation" : 0,
@@ -41,11 +41,11 @@
 						"appversion" : 						{
 							"major" : 6,
 							"minor" : 1,
-							"revision" : 7,
+							"revision" : 8,
 							"architecture" : "x64"
 						}
 ,
-						"rect" : [ 308.0, 102.0, 858.0, 640.0 ],
+						"rect" : [ 0.0, 42.0, 1366.0, 640.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -797,7 +797,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"patching_rect" : [ 63.0, 59.0, 38.0, 20.0 ],
-									"text" : "> -30"
+									"text" : "> -31"
 								}
 
 							}
@@ -1987,15 +1987,15 @@
  ],
 		"dependency_cache" : [ 			{
 				"name" : "fp_fft.maxpat",
-				"bootpath" : "/PROGRA~1/CYCLIN~1/MAX6~1.1/examples/fft-fun/lib",
-				"patcherrelativepath" : "../../../../../PROGRA~1/CYCLIN~1/MAX6~1.1/examples/fft-fun/lib",
+				"bootpath" : "/Program Files/Cycling '74/Max 6.1/examples/fft-fun/lib",
+				"patcherrelativepath" : "../../../../../../Program Files/Cycling '74/Max 6.1/examples/fft-fun/lib",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "IO.maxpat",
-				"bootpath" : "/PROGRA~1/CYCLIN~1/MAX6~1.1/examples/utilities/input_output IO/lib",
-				"patcherrelativepath" : "../../../../../PROGRA~1/CYCLIN~1/MAX6~1.1/examples/utilities/input_output IO/lib",
+				"bootpath" : "/Program Files/Cycling '74/Max 6.1/examples/utilities/input_output IO/lib",
+				"patcherrelativepath" : "../../../../../../Program Files/Cycling '74/Max 6.1/examples/utilities/input_output IO/lib",
 				"type" : "JSON",
 				"implicit" : 1
 			}
