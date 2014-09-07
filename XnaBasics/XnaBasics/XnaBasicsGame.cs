@@ -53,6 +53,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         WinningScreen m_winningScreen;
         StartScreen m_gameStartupScreen;
 
+
+
         /// <summary>
         /// This is the UDP port that will be used to communicate with the OSC server.
         /// </summary>
@@ -79,6 +81,9 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private static Level level;
 
         private Boolean clapped;
+
+        private const double maxVisualFeedbackDuration = 100;
+        private double currentVisualFeedbackDuration;
 
         private const double maxVisualFeedbackDuration = 100;
         private double currentVisualFeedbackDuration;
@@ -379,11 +384,11 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
             this.colorStream.Position = this.colorMaxPosition;
             this.colorStream.Size = this.maxSize;
-            this.snarePosition = new Vector2((800 - (this.barrel.Width * barrelScale)) / 2, (600 - (this.barrel.Height * barrelScale)) / 2);
-//            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", this.snarePosition.X, this.snarePosition.Y, this.snare.Bounds.Width, this.snare.Bounds.Height);
+            this.snarePosition = new Vector2((800 - (this.snare.Width * snareScale)) / 2, (600 - (this.snare.Height * snareScale)) / 2);
+            //            Console.WriteLine("Objec: ({0},{1}) W:{2} H:{3}", this.snarePosition.X, this.snarePosition.Y, this.snare.Bounds.Width, this.snare.Bounds.Height);
   //          Console.WriteLine("Objec: L:{0} R:{1} T:{2} B:{3}", this.snare.Bounds.Left, this.snare.Bounds.Right, this.snare.Bounds.Top, this.snare.Bounds.Bottom);
             // Did the player collide with any of their joints?
-            if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
+            if (SkeletonStreamRenderer.didJointCollide(new Rectangle ((int)this.snarePosition.X, (int)this.snarePosition.Y - 100, (int) this.snare.Bounds.Width, (int)this.snare.Bounds.Height), spriteBatch))
             {
                 playerColided = true;
 //                Console.WriteLine("You Collided!");
