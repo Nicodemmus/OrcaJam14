@@ -240,7 +240,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
             // Start the OSC server. This seems to be an independent thread that runs separately to the game loop.
             m_oscServer.Start();
 
-            level = Level.Level2;
+            level = Level.InitialScreen;
 
             barrelScale = barrelRealScale;
             snareScale = snareRealScale;
@@ -332,7 +332,7 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 }
                 else
                 {
-                    level = Level.Level2;
+                    level = Level.WinningScreen;
                 }
             }
 
@@ -701,18 +701,22 @@ namespace Microsoft.Samples.Kinect.XnaBasics
 
         private static void handleClapWiningScreen()
         {
+            /*
             lock (m_semaphore)
             {
                 XnaBasics.startLevel2();
             }
+             * */
         }
 
         private static void handleClapGameOverScreen()
         {
+            /*
             lock (m_semaphore)
             {
                 XnaBasics.startGame();
             }
+             * */
         }
     }
 }
