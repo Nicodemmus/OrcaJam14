@@ -344,6 +344,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
         private void updateInitialScreen(GameTime gameTime)
         {
             m_gameStartupScreen.Update(gameTime);
+            this.colorStream.Position = this.colorSmallPosition;
+            this.colorStream.Size = this.minSize;
         }
 
         private void updateGameOver(GameTime gameTime)
@@ -386,6 +388,8 @@ namespace Microsoft.Samples.Kinect.XnaBasics
                 default:
                     break;
             }
+
+            base.Update(gameTime);
         }
 
         
